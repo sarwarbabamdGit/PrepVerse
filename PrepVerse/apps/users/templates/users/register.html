@@ -1,0 +1,26 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Register - PrepVerse{% endblock %}
+
+{% block content %}
+<div class="glass" style="max-width: 500px; margin: 4rem auto;">
+    <h2 style="margin-bottom: 2rem; text-align: center;">Join PrepVerse</h2>
+    <form method="POST">
+        {% csrf_token %}
+        {% for field in form %}
+            <div style="margin-bottom: 1.5rem;">
+                <label style="display: block; margin-bottom: 0.5rem;">{{ field.label }}</label>
+                <input type="{{ field.field.widget.input_type|default:'text' }}" name="{{ field.name }}" class="search-box" style="width: 100%; border: 1px solid rgba(0,0,0,0.1); margin: 0; box-shadow: none;" required>
+                {% if field.errors %}
+                    <p style="color: var(--accent-red); font-size: 0.85rem; margin-top: 0.3rem;">{{ field.errors.0 }}</p>
+                {% endif %}
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Register</button>
+    </form>
+    <p style="text-align: center; margin-top: 2rem; opacity: 0.7;">
+        Already have an account? <a href="{% url 'users:login' %}" style="color: var(--primary); font-weight: 600;">Login here</a>
+    </p>
+</div>
+{% endblock %}

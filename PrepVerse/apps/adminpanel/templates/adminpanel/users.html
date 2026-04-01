@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}User Management - PrepVerse{% endblock %}
+
+{% block content %}
+<section class="glass">
+    <h1 style="margin-bottom: 2rem;">👤 User Management</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>User</th>
+                    <th>Email</th>
+                    <th>Joined At</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for u in users %}
+                <tr>
+                    <td><strong>{{ u.username }}</strong></td>
+                    <td>{{ u.email }}</td>
+                    <td>{{ u.date_joined|date }}</td>
+                    <td>{% if u.is_staff %}<span style="color: var(--primary);">Admin</span>{% else %}User{% endif %}</td>
+                    <td>
+                        <a href="{% url 'adminpanel:user_details' u.id %}" class="btn" style="padding: 0.3rem 0.8rem; background: rgba(0,0,0,0.05); text-decoration: none;">View</a>
+                        {% if not u.is_superuser %}
+                            <a href="{% url 'adminpanel:delete_user' u.id %}" class="btn" style="color: var(--accent-red); padding: 0.3rem 0.8rem; border-color: transparent;">Delete</a>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

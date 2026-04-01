@@ -1,0 +1,85 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}{{ topic.topic_name }} - Results{% endblock %}
+
+{% block content %}
+<section class="glass" style="margin-bottom: 3rem; text-align: center; background: linear-gradient(135deg, var(--primary), var(--accent-blue)); color: white;">
+    <h1>{{ topic.topic_name }}</h1>
+    <div style="display: flex; justify-content: center; gap: 1rem; margin-top: 1.5rem;">
+        <a href="{% url 'core:toggle_bookmark' topic.id %}" class="btn glass" style="color: white; border-color: rgba(255,255,255,0.3); padding: 0.5rem 1.5rem;">
+            {% if is_bookmarked %}⭐ Unbookmark{% else %}☆ Bookmark{% endif %}
+        </a>
+        <a href="#test-section" class="btn glass" style="color: white; border-color: rgba(255,255,255,0.3); padding: 0.5rem 1.5rem;">Start MCQ Test</a>
+    </div>
+</section>
+
+<div class="tabs">
+    <div class="tab-btn active" data-target="study-pane">📘 Study Material</div>
+    <div class="tab-btn" data-target="video-pane">🎥 Related Videos</div>
+</div>
+
+<div id="study-pane" class="tab-pane glass active" style="margin-bottom: 3rem; min-height: 400px; display: block;">
+    <h2 style="margin-bottom: 1.5rem;">Notes</h2>
+    <div style="font-size: 1.1rem; line-height: 1.8;">
+        {{ topic.study_material|linebreaks }}
+    </div>
+</div>
+
+<div id="video-pane" class="tab-pane" style="margin-bottom: 3rem; display: none;">
+    <div class="video-grid">
+        {% for video in videos %}
+            <div class="glass video-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: var(--transition);">
+                <div style="position: relative; padding-top: 56.25%;">
+                    <img src="{{ video.thumbnail }}" alt="{{ video.title }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: var(--transition);">
+                </div>
+                <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1rem; line-height: 1.4; min-height: 2.8rem;">{{ video.title }}</h4>
+                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank" class="btn btn-primary" style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none;">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M10 15.5v-7L16 12l-6 3.5zM22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path></svg>
+                        View Video
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+
+<section id="test-section" class="glass" style="margin-bottom: 4rem;">
+    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 2rem;">
+        <div>
+            <h2 style="margin: 0;">🧪 MCQ Assessment</h2>
+            <p style="opacity: 0.7;">Test your knowledge on {{ topic.topic_name }}</p>
+        </div>
+        <div class="stat-card">
+            <p>30 Qs</p>
+        </div>
+    </div>
+
+    {% if mcqs %}
+    <form method="POST" action="{% url 'core:submit_test' topic.id %}">
+        {% csrf_token %}
+        {% for mcq in mcqs %}
+            <div class="mcq-card glass" data-id="{{ mcq.id }}">
+                <h3>{{ forloop.counter }}. {{ mcq.question }}</h3>
+                <input type="hidden" name="ans_{{ mcq.id }}" id="ans_{{ mcq.id }}" value="">
+                <div class="options-grid">
+                    <div class="option-btn" data-value="A">{{ mcq.option1 }}</div>
+                    <div class="option-btn" data-value="B">{{ mcq.option2 }}</div>
+                    <div class="option-btn" data-value="C">{{ mcq.option3 }}</div>
+                    <div class="option-btn" data-value="D">{{ mcq.option4 }}</div>
+                </div>
+            </div>
+        {% endfor %}
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1.5rem; font-size: 1.2rem; border-radius: 1.5rem; margin-top: 2rem;">Submit My Test</button>
+    </form>
+    {% else %}
+    <p style="text-align: center; padding: 4rem; opacity: 0.6;">Mcqs are still being generated or failed to generate. Please retry searching.</p>
+    {% endif %}
+</section>
+
+<style>
+    .tab-pane { display: none; }
+    .tab-pane.active { display: block !important; }
+</style>
+{% endblock %}

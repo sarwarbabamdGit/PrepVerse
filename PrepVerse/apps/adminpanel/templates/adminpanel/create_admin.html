@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block title %}Create Admin - PrepVerse{% endblock %}
+
+{% block content %}
+<div class="glass" style="max-width: 500px; margin: 4rem auto;">
+    <h2 style="margin-bottom: 2rem; text-align: center;">Add New Administrator</h2>
+    <form method="POST">
+        {% csrf_token %}
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Username</label>
+            <input type="text" name="username" class="search-box" style="width: 100%; border: 1px solid rgba(0,0,0,0.1); margin: 0; box-shadow: none;" required>
+        </div>
+        <div style="margin-bottom: 1.5rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Email</label>
+            <input type="email" name="email" class="search-box" style="width: 100%; border: 1px solid rgba(0,0,0,0.1); margin: 0; box-shadow: none;" required>
+        </div>
+        <div style="margin-bottom: 2rem;">
+            <label style="display: block; margin-bottom: 0.5rem;">Password</label>
+            <input type="password" name="password" class="search-box" style="width: 100%; border: 1px solid rgba(0,0,0,0.1); margin: 0; box-shadow: none;" required>
+        </div>
+        <button type="submit" class="btn btn-primary" style="width: 100%; padding: 1rem;">Create Admin Account</button>
+    </form>
+    <div style="text-align: center; margin-top: 2rem;">
+        <a href="{% url 'adminpanel:users' %}" style="opacity: 0.7; text-decoration: none;">Back to Users</a>
+    </div>
+</div>
+{% endblock %}

@@ -1,0 +1,60 @@
+{% extends 'base.html' %}
+{% block title %}User Details - PrepVerse{% endblock %}
+
+{% block content %}
+<section class="glass" style="margin-bottom: 3rem;">
+    <h1>User: {{ target_user.username }}</h1>
+    <p style="opacity: 0.7;">Email: {{ target_user.email }} | Joined: {{ target_user.date_joined|date }}</p>
+</section>
+
+<div class="grid" style="grid-template-columns: 1fr 1fr; gap: 2rem;">
+    <div class="glass">
+        <h2 style="margin-bottom: 2rem;">🔍 Search History</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Created At</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for search in searches %}
+                    <tr>
+                        <td>{{ search.topic_name }}</td>
+                        <td>{{ search.created_at|date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="glass">
+        <h2 style="margin-bottom: 2rem;">🧪 Test Attempts</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Score</th>
+                        <th>Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for attempt in attempts %}
+                    <tr>
+                        <td>{{ attempt.topic.topic_name }}</td>
+                        <td>{{ attempt.score }}/{{ attempt.total_questions }}</td>
+                        <td>{{ attempt.attempted_at|date }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<div style="margin-top: 2rem;">
+    <a href="{% url 'adminpanel:users' %}" class="btn" style="background: rgba(0,0,0,0.1); padding: 0.5rem 1.5rem; text-decoration: none;">Back to List</a>
+</div>
+{% endblock %}

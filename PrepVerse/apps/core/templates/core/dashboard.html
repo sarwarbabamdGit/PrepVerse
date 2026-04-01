@@ -1,0 +1,75 @@
+{% extends 'base.html' %}
+{% load static %}
+
+{% block title %}Dashboard - PrepVerse{% endblock %}
+
+{% block content %}
+<div id="loader" class="loader"></div>
+
+<section class="search-section">
+    <h1>Prepare for Any Topic</h1>
+    <p>Generate study material, videos, and MCQs in seconds.</p>
+    
+    <form id="search-form" method="POST" action="{% url 'core:search' %}" class="search-box">
+        {% csrf_token %}
+        <input type="text" name="topic" placeholder="What do you want to learn today? (e.g. Python, SQL, AWS)" required>
+        <button type="submit" class="btn btn-primary">Search</button>
+    </form>
+</section>
+
+{% if bookmarks %}
+<section style="margin-bottom: 4rem;">
+    <h2 style="margin-bottom: 1.5rem;">⭐ Bookmarked Topics</h2>
+    <div class="grid">
+        {% for bookmark in bookmarks %}
+            <div class="glass card">
+                <h3>{{ bookmark.topic.topic_name }}</h3>
+                <p style="opacity: 0.7; margin-bottom: 1.5rem;">Searched on {{ bookmark.topic.created_at|date }}</p>
+                <div style="display: flex; gap: 1rem;">
+                    <form method="POST" action="{% url 'core:search' %}">
+                        {% csrf_token %}
+                        <input type="hidden" name="topic" value="{{ bookmark.topic.topic_name }}">
+                        <button type="submit" class="btn btn-primary" style="padding: 0.5rem 1rem;">View Material</button>
+                    </form>
+                    <a href="{% url 'core:toggle_bookmark' bookmark.topic.id %}" class="btn" style="background: rgba(0,0,0,0.1); padding: 0.5rem 1rem;">Remove</a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</section>
+{% endif %}
+
+{% if history %}
+<section>
+    <h2 style="margin-bottom: 1.5rem;">📜 Recent History</h2>
+    <div class="glass">
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Topic</th>
+                        <th>Date</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in history %}
+                        <tr>
+                            <td><strong>{{ item.topic_name }}</strong></td>
+                            <td>{{ item.created_at|date }}</td>
+                            <td>
+                                <form method="POST" action="{% url 'core:search' %}" style="display: inline;">
+                                    {% csrf_token %}
+                                    <input type="hidden" name="topic" value="{{ item.topic_name }}">
+                                    <button type="submit" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">Retry</button>
+                                </form>
+                            </td>
+                        </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+{% endif %}
+{% endblock %}

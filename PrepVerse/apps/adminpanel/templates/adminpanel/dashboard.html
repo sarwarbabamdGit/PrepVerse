@@ -1,0 +1,83 @@
+{% extends 'base.html' %}
+{% block title %}Admin Dashboard - PrepVerse{% endblock %}
+
+{% block content %}
+<section style="margin-bottom: 2rem; display: flex; justify-content: space-between; align-items: center;">
+    <h1>Administrator Controls</h1>
+    <a href="{% url 'adminpanel:users' %}" class="btn btn-primary">User Management</a>
+</section>
+
+<div class="grid" style="margin-bottom: 4rem;">
+    <div class="glass stat-card">
+        <h3>Total Users</h3>
+        <p>{{ total_users }}</p>
+    </div>
+    <div class="glass stat-card">
+        <h3>Total Searches</h3>
+        <p>{{ total_searches }}</p>
+    </div>
+    <div class="glass stat-card">
+        <h3>Average Score</h3>
+        <p>{{ avg_score|floatformat:1 }}</p>
+    </div>
+</div>
+
+<div class="grid" style="grid-template-columns: 2fr 1fr; gap: 2rem;">
+    <div class="glass">
+        <h2 style="margin-bottom: 2rem;">Trending Topics</h2>
+        <canvas id="trendingChart"></canvas>
+    </div>
+    <div class="glass">
+        <h2 style="margin-bottom: 2rem;">Most Active Users</h2>
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>User</th>
+                        <th>Searches</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for u in active_users %}
+                    <tr>
+                        <td>{{ u.username }}</td>
+                        <td>{{ u.search_count }}</td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+    const trendingLabels = {{ trending_labels|safe }};
+    const trendingData = {{ trending_data|safe }};
+
+    const ctx = document.getElementById('trendingChart').getContext('2d');
+    new Chart(ctx, {
+        type: 'bar',
+        data: {
+            labels: trendingLabels,
+            datasets: [{
+                label: 'Search Count',
+                data: trendingData,
+                backgroundColor: 'rgba(99, 102, 241, 0.6)',
+                borderColor: 'rgb(99, 102, 241)',
+                borderWidth: 1,
+                borderRadius: 10
+            }]
+        },
+        options: {
+            responsive: true,
+            plugins: {
+                legend: { display: false }
+            },
+            scales: {
+                y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.05)' } },
+                x: { grid: { display: false } }
+            }
+        }
+    });
+</script>
+{% endblock %}

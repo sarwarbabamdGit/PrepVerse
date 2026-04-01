@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block title %}Search History - PrepVerse{% endblock %}
+
+{% block content %}
+<section class="glass">
+    <h1 style="margin-bottom: 2rem;">📜 Search History</h1>
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Topic</th>
+                    <th>Date</th>
+                    <th>Last Score</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in history %}
+                    <tr>
+                        <td><strong>{{ item.topic_name }}</strong></td>
+                        <td>{{ item.created_at|date }}</td>
+                        <td>{{ item.last_score }}</td>
+                        <td>
+                            <form method="POST" action="{% url 'core:search' %}" style="display: inline;">
+                                {% csrf_token %}
+                                <input type="hidden" name="topic" value="{{ item.topic_name }}">
+                                <button type="submit" class="btn btn-primary" style="padding: 0.3rem 0.8rem; font-size: 0.9rem;">Retry</button>
+                            </form>
+                            <a href="{% url 'core:delete_history' item.id %}" class="btn" style="color: var(--accent-red); padding: 0.3rem 0.8rem; border-color: transparent;">Delete</a>
+                        </td>
+                    </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</section>
+{% endblock %}

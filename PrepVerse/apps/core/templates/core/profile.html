@@ -1,0 +1,46 @@
+{% extends 'base.html' %}
+{% load math_filters %}
+{% block title %}Profile - PrepVerse{% endblock %}
+
+{% block content %}
+<section class="glass" style="margin-bottom: 3rem; text-align: center;">
+    <div style="width: 100px; height: 100px; background: var(--primary); border-radius: 50%; margin: 0 auto 1.5rem; display: flex; align-items: center; justify-content: center; font-size: 3rem; color: white; font-weight: 700;">
+        {{ user.username|first|upper }}
+    </div>
+    <h1>{{ user.username }}</h1>
+    <p style="opacity: 0.7;">{{ user.email }} | Joined {{ user.date_joined|date }}</p>
+</section>
+
+<h2 style="margin-bottom: 2rem;">📊 Your Test Performance</h2>
+<div class="glass">
+    {% if attempts %}
+    <div class="table-container">
+        <table>
+            <thead>
+                <tr>
+                    <th>Topic</th>
+                    <th>Score</th>
+                    <th>Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for attempt in attempts %}
+                <tr>
+                    <td><strong>{{ attempt.topic.topic_name }}</strong></td>
+                    <td>
+                        <span style="color: {% if attempt.score|divide:attempt.total_questions > 0.7 %}var(--accent-green){% elif attempt.score|divide:attempt.total_questions > 0.4 %}var(--accent-blue){% else %}var(--accent-red){% endif %}; font-weight: 600;">
+                            {{ attempt.score }} / {{ attempt.total_questions }}
+                        </span>
+                    </td>
+                    <td>{{ attempt.attempted_at|date }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% else %}
+    <p style="text-align: center; padding: 2rem; opacity: 0.6;">You haven't attempted any tests yet. Search a topic and start learning!</p>
+    {% endif %}
+</div>
+{% endblock %}
+{% load math_filters %}

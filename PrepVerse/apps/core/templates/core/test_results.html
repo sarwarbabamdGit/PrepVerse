@@ -1,0 +1,94 @@
+{% extends 'base.html' %}
+{% load math_filters %}
+{% load static %}
+
+{% block title %}Test Results - PrepVerse{% endblock %}
+
+{% block content %}
+<section class="glass" style="text-align: center; margin-bottom: 3rem; background: linear-gradient(135deg, #10b981, #3b82f6); color: white;">
+    <h1 style="font-size: 3rem; margin-bottom: 1rem;">Assessment Complete</h1>
+    <p>You scored {{ score }} out of {{ total }}</p>
+    <div style="margin-top: 2rem; font-size: 2.5rem; font-weight: 700;">
+        {{ score|floatformat:0 }} / {{ total }}
+    </div>
+</section>
+
+<div class="grid" style="margin-bottom: 4rem;">
+    <div class="glass stat-card">
+        <h3>Correct</h3>
+        <p style="color: var(--accent-green);">{{ score }}</p>
+    </div>
+    <div class="glass stat-card">
+        <h3>Wrong</h3>
+        <p style="color: var(--accent-red);">{{ total|subtract:score }}</p>
+    </div>
+    <div class="glass stat-card">
+        <h3>Accuracy</h3>
+        <p>{{ score|divide:total|multiply:100|floatformat:1 }}%</p>
+    </div>
+</div>
+
+<h2 style="margin-bottom: 2rem;">Review Your Answers</h2>
+{% for res in results %}
+    <div class="mcq-card glass {% if res.is_correct %}correct-border{% else %}wrong-border{% endif %}">
+        <h3>{{ forloop.counter }}. {{ res.mcq.question }}</h3>
+        
+        <div class="options-grid">
+            <div class="option-btn {% if res.mcq.correct_answer == 'A' %}correct{% elif res.user_ans == 'A' and not res.is_correct %}wrong{% endif %}">
+                {{ res.mcq.option1 }}
+            </div>
+            <div class="option-btn {% if res.mcq.correct_answer == 'B' %}correct{% elif res.user_ans == 'B' and not res.is_correct %}wrong{% endif %}">
+                {{ res.mcq.option2 }}
+            </div>
+            <div class="option-btn {% if res.mcq.correct_answer == 'C' %}correct{% elif res.user_ans == 'C' and not res.is_correct %}wrong{% endif %}">
+                {{ res.mcq.option3 }}
+            </div>
+            <div class="option-btn {% if res.mcq.correct_answer == 'D' %}correct{% elif res.user_ans == 'D' and not res.is_correct %}wrong{% endif %}">
+                {{ res.mcq.option4 }}
+            </div>
+        </div>
+        
+        {% if not res.is_correct %}
+            <div class="explanation">
+                <strong>Correct Answer: {{ res.mcq.correct_answer }}</strong>
+                <p>{{ res.mcq.explanation }}</p>
+            </div>
+        {% else %}
+            <div class="explanation" style="background: rgba(16, 185, 129, 0.05); border-left-color: var(--accent-green); margin-top: 1rem;">
+                <p>Great job! You got it correct. {{ res.mcq.explanation }}</p>
+            </div>
+        {% endif %}
+    </div>
+{% endfor %}
+
+{% if videos %}
+<div style="margin-top: 4rem; margin-bottom: 3rem;">
+    <h2 style="margin-bottom: 2rem;">📺 Master This Topic</h2>
+    <div class="video-grid">
+        {% for video in videos %}
+            <div class="glass video-card" style="padding: 0; overflow: hidden; display: flex; flex-direction: column; transition: var(--transition);">
+                <div style="position: relative; padding-top: 56.25%;">
+                    <img src="{{ video.thumbnail }}" alt="{{ video.title }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; object-fit: cover; transition: var(--transition);">
+                </div>
+                <div style="padding: 1.5rem; flex-grow: 1; display: flex; flex-direction: column; justify-content: space-between;">
+                    <h4 style="margin: 0 0 1rem 0; font-size: 1rem; line-height: 1.4; min-height: 2.8rem;">{{ video.title }}</h4>
+                    <a href="https://www.youtube.com/watch?v={{ video.video_id }}" target="_blank" class="btn btn-primary" style="text-align: center; display: flex; align-items: center; justify-content: center; gap: 0.5rem; text-decoration: none;">
+                        <svg width="20" height="20" fill="currentColor" viewBox="0 0 24 24"><path d="M10 15.5v-7L16 12l-6 3.5zM22 12c0 5.523-4.477 10-10 10S2 17.523 2 12 6.477 2 12 2s10 4.477 10 10z"></path></svg>
+                        View Video
+                    </a>
+                </div>
+            </div>
+        {% endfor %}
+    </div>
+</div>
+{% endif %}
+
+<div style="text-align: center; margin-bottom: 4rem;">
+    <a href="{% url 'core:dashboard' %}" class="btn btn-primary" style="padding: 1rem 3rem;">Return to Dashboard</a>
+</div>
+
+<style>
+    .correct-border { border-left: 8px solid var(--accent-green); }
+    .wrong-border { border-left: 8px solid var(--accent-red); }
+</style>
+{% endblock %}
