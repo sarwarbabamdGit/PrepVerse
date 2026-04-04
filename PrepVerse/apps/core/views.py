@@ -39,16 +39,18 @@ def search_topic(request):
             
             # Save MCQs
             for q in api_data.get('mcqs', []):
-                MCQ.objects.create(
-                    topic=search_obj,
-                    question=q['question'],
-                    option1=q['options'][0],
-                    option2=q['options'][1],
-                    option3=q['options'][2],
-                    option4=q['options'][3],
-                    correct_answer=q['correct_answer'],
-                    explanation=q['explanation']
-                )
+                options = q.get('options', [])
+                if len(options) >= 4:
+                    MCQ.objects.create(
+                        topic=search_obj,
+                        question=q.get('question', 'N/A'),
+                        option1=options[0],
+                        option2=options[1],
+                        option3=options[2],
+                        option4=options[3],
+                        correct_answer=q.get('correct_answer', 'A'),
+                        explanation=q.get('explanation', '')
+                    )
         
         return render(request, 'core/search_results.html', {
             'topic': search_obj,

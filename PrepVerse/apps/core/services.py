@@ -5,7 +5,6 @@ import json
 
 def get_study_material_and_mcqs(topic):
     genai.configure(api_key=settings.GEMINI_API_KEY)
-    model = genai.GenerativeModel('gemini-3-flash-preview')
     
     prompt = f"""
     Topic: {topic}
@@ -35,14 +34,18 @@ def get_study_material_and_mcqs(topic):
     Ensure all 30 MCQs are generated and do not include any other text except the JSON.
     """
     
-    response = model.generate_content(prompt)
     try:
-        # If response has backticks, strip them
-        content = response.text.replace("```json", "").replace("```", "").strip()
+        model = genai.GenerativeModel('gemini-3-flash-preview')
+        response = model.generate_content(prompt)
+        
+        if not response.text:
+            return None
+            
+        content = response.text.replace("```json", "").replace("```", "").replace("```", "").strip()
         data = json.loads(content)
         return data
     except Exception as e:
-        print(f"Error parsing Gemini response: {e}")
+        print(f"Error in Gemini service: {e}")
         return None
 
 def get_youtube_videos(topic):
