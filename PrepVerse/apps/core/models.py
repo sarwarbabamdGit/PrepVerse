@@ -5,6 +5,9 @@ class TopicSearch(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE, related_name='searches')
     topic_name = models.CharField(max_length=255)
     study_material = models.TextField(blank=True, null=True)
+    exam_pattern = models.TextField(blank=True, null=True)
+    previous_papers = models.TextField(blank=True, null=True)
+    preparation_guidance = models.TextField(blank=True, null=True)
     created_at = models.DateTimeField(auto_now_add=True)
 
     def __str__(self):

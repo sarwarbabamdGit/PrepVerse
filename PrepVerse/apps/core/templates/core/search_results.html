@@ -21,9 +21,30 @@
 
 <div id="study-pane" class="tab-pane glass active" style="margin-bottom: 3rem; min-height: 400px; display: block;">
     <h2 style="margin-bottom: 1.5rem;">Notes</h2>
-    <div style="font-size: 1.1rem; line-height: 1.8;">
+    <div style="font-size: 1.1rem; line-height: 1.8; margin-bottom: 2rem;">
         {{ topic.study_material|linebreaks }}
     </div>
+
+    {% if topic.exam_pattern %}
+    <div class="exam-info-box glass" style="background: rgba(255,100,0,0.05); border-left: 4px solid var(--accent-orange); margin-top: 2rem; padding: 1.5rem;">
+        <h3 style="color: var(--accent-orange); margin-bottom: 1rem;">🗓️ Exam Pattern</h3>
+        <p>{{ topic.exam_pattern|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if topic.previous_papers %}
+    <div class="exam-info-box glass" style="background: rgba(0,150,255,0.05); border-left: 4px solid var(--accent-blue); margin-top: 2rem; padding: 1.5rem;">
+        <h3 style="color: var(--accent-blue); margin-bottom: 1rem;">📜 Previous Question Papers (References)</h3>
+        <p>{{ topic.previous_papers|linebreaks }}</p>
+    </div>
+    {% endif %}
+
+    {% if topic.preparation_guidance %}
+    <div class="exam-info-box glass" style="background: rgba(0,255,150,0.05); border-left: 4px solid #00ff96; margin-top: 2rem; padding: 1.5rem;">
+        <h3 style="color: #00ff96; margin-bottom: 1rem;">💡 Preparation Guidance</h3>
+        <p>{{ topic.preparation_guidance|linebreaks }}</p>
+    </div>
+    {% endif %}
 </div>
 
 <div id="video-pane" class="tab-pane" style="margin-bottom: 3rem; display: none;">

@@ -38,6 +38,15 @@ DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = ["*"]
 
+# Vercel deployment support
+import os
+if 'VERCEL' in os.environ:
+    ALLOWED_HOSTS = [os.environ.get('VERCEL_URL', 'localhost')]
+    DEBUG = False
+    SECURE_SSL_REDIRECT = True
+    SESSION_COOKIE_SECURE = True
+    CSRF_COOKIE_SECURE = True
+
 
 # Application definition
 

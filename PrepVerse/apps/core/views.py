@@ -34,23 +34,31 @@ def search_topic(request):
         videos = get_youtube_videos(topic_name)
         
         if api_data:
-            search_obj.study_material = api_data.get('study_material')
-            search_obj.save()
-            
-            # Save MCQs
-            for q in api_data.get('mcqs', []):
-                options = q.get('options', [])
-                if len(options) >= 4:
-                    MCQ.objects.create(
-                        topic=search_obj,
-                        question=q.get('question', 'N/A'),
-                        option1=options[0],
-                        option2=options[1],
-                        option3=options[2],
-                        option4=options[3],
-                        correct_answer=q.get('correct_answer', 'A'),
-                        explanation=q.get('explanation', '')
-                    )
+            if 'error' in api_data:
+                # Handle blocked content
+                search_obj.study_material = f"ERROR: {api_data['error']}"
+                search_obj.save()
+            else:
+                search_obj.study_material = api_data.get('study_material')
+                search_obj.exam_pattern = api_data.get('exam_pattern')
+                search_obj.previous_papers = api_data.get('previous_papers')
+                search_obj.preparation_guidance = api_data.get('preparation_guidance')
+                search_obj.save()
+                
+                # Save MCQs
+                for q in api_data.get('mcqs', []):
+                    options = q.get('options', [])
+                    if len(options) >= 4:
+                        MCQ.objects.create(
+                            topic=search_obj,
+                            question=q.get('question', 'N/A'),
+                            option1=options[0],
+                            option2=options[1],
+                            option3=options[2],
+                            option4=options[3],
+                            correct_answer=q.get('correct_answer', 'A'),
+                            explanation=q.get('explanation', '')
+                        )
         
         return render(request, 'core/search_results.html', {
             'topic': search_obj,
