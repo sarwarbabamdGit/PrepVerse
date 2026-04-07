@@ -87,14 +87,27 @@ body.dark-mode .navbar {
     font-weight: 700;
     text-decoration: none;
     color: var(--text-light);
+    display: inline-flex;
+    align-items: center;
+}
+
+.logo-img {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    object-fit: cover;
+    display: inline-block;
+    margin-right: 0.75rem;
+    border: 2px solid rgba(99, 102, 241, 0.5);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.12);
 }
 
 body.dark-mode .logo {
     color: var(--text-dark);
 }
 
-.logo span {
-    color: var(--primary);
+.logo-highlight {
+    color: var(--accent-red);
 }
 
 .nav-links {
