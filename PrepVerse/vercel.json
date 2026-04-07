@@ -24,7 +24,6 @@
     }
   ],
   "env": {
-    "DEBUG": "False",
-    "ALLOWED_HOSTS": "your-domain.vercel.app"
+    "DEBUG": "False"
   }
 }

@@ -41,11 +41,19 @@ ALLOWED_HOSTS = ["*"]
 # Vercel deployment support
 import os
 if 'VERCEL' in os.environ:
-    ALLOWED_HOSTS = [os.environ.get('VERCEL_URL', 'localhost')]
     DEBUG = False
     SECURE_SSL_REDIRECT = True
     SESSION_COOKIE_SECURE = True
     CSRF_COOKIE_SECURE = True
+    SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
+    USE_X_FORWARDED_HOST = True
+
+    vercel_url = os.environ.get('VERCEL_URL')
+    env_hosts = config('ALLOWED_HOSTS', default='').split(',')
+    allowed_hosts = [host.strip() for host in env_hosts if host.strip()]
+    if vercel_url:
+        allowed_hosts.append(vercel_url)
+    ALLOWED_HOSTS = allowed_hosts or ["*"]
 
 
 # Application definition
